@@ -106,7 +106,7 @@ class MainPageStateWidget extends StatelessWidget {
               imageTopPadding: 22,
               buttonText: 'Retry',
             );
-          case MainPageState.searchResult:
+          case MainPageState.searchResults:
             return SearchResultWidget();
           case MainPageState.favorites:
             return FavoritesWidget();
