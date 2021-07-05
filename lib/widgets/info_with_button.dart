@@ -41,7 +41,7 @@ class InfoWithButton extends StatelessWidget {
                 ),
               ),
               Padding(
-                padding: EdgeInsets.only(top: imageTopPadding),
+                padding: EdgeInsets.only(top: imageTopPadding,),
                 child: Image.asset(
                   assetImage,
                   width: imageWidth,
