@@ -17,7 +17,9 @@ class SuperheroPage extends StatelessWidget {
                 alignment: Alignment.center,
                 child: Text(
                   name,
+                  textAlign: TextAlign.center,
                   style: TextStyle(
+
                       color: Colors.white,
                       fontWeight: FontWeight.w600,
                       fontSize: 20),
