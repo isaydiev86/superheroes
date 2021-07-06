@@ -327,7 +327,7 @@ class LoadingIndicator extends StatelessWidget {
       child: Padding(
         padding: EdgeInsets.only(top: 110),
         child: CircularProgressIndicator(
-          color: SuperheroesColors.blue,
+          valueColor: AlwaysStoppedAnimation<Color>(SuperheroesColors.blue),
           strokeWidth: 4,
         ),
       ),
