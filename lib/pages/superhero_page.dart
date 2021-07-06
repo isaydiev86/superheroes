@@ -4,6 +4,7 @@ import 'package:superheroes/widgets/action_button.dart';
 
 class SuperheroPage extends StatelessWidget {
   final String name;
+
   const SuperheroPage({Key? key, required this.name}) : super(key: key);
 
   @override
@@ -19,7 +20,6 @@ class SuperheroPage extends StatelessWidget {
                   name,
                   textAlign: TextAlign.center,
                   style: TextStyle(
-
                       color: Colors.white,
                       fontWeight: FontWeight.w600,
                       fontSize: 20),
