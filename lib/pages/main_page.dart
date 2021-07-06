@@ -90,7 +90,7 @@ class MainPageStateWidget extends StatelessWidget {
             return InfoWithButton(
               title: 'Nothing found',
               subtitle: 'Search for something else',
-              assetImage: SuperheroesImages.nothing,
+              assetImage: SuperheroesImages.hulk,
               imageHeight: 112,
               imageWidth: 84,
               imageTopPadding: 16,
@@ -100,7 +100,7 @@ class MainPageStateWidget extends StatelessWidget {
             return InfoWithButton(
               title: 'Error happened',
               subtitle: 'Please, try again',
-              assetImage: SuperheroesImages.error,
+              assetImage: SuperheroesImages.superman,
               imageHeight: 106,
               imageWidth: 126,
               imageTopPadding: 22,
@@ -232,61 +232,6 @@ class FavoritesWidget extends StatelessWidget {
           ),
         ),
       ],
-    );
-  }
-}
-
-class NoFavoritesWidget extends StatelessWidget {
-  const NoFavoritesWidget({
-    Key? key,
-  }) : super(key: key);
-
-  @override
-  Widget build(BuildContext context) {
-    return Align(
-      alignment: Alignment.center,
-      child: Column(
-        mainAxisSize: MainAxisSize.min,
-        //mainAxisAlignment: MainAxisAlignment.center,
-        //crossAxisAlignment: CrossAxisAlignment.center,
-        children: [
-          Stack(
-            children: [
-              Container(
-                width: 108,
-                height: 108,
-                decoration: BoxDecoration(
-                  color: SuperheroesColors.blue,
-                  shape: BoxShape.circle,
-                  //borderRadius: BorderRadius.circular(100)
-                ),
-              ),
-              Padding(
-                padding: const EdgeInsets.only(top: 9.0),
-                child: Image.asset(
-                  SuperheroesImages.ironMan,
-                  width: 108,
-                  height: 119,
-                ),
-              )
-            ],
-          ),
-          const SizedBox(height: 20),
-          Text(
-            'No favorites yet',
-            style: TextStyle(
-                color: Colors.white, fontSize: 32, fontWeight: FontWeight.w800),
-          ),
-          const SizedBox(height: 20),
-          Text('Search and add'.toUpperCase(),
-              style: TextStyle(
-                  color: Colors.white,
-                  fontSize: 16,
-                  fontWeight: FontWeight.w700)),
-          const SizedBox(height: 30),
-          ActionButton(text: 'search', onTap: () {})
-        ],
-      ),
     );
   }
 }

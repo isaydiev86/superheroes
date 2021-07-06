@@ -2,6 +2,6 @@ class SuperheroesImages {
   SuperheroesImages._();
 
   static const ironMan = "assets/images/ironman.png";
-  static const nothing = "assets/images/nothing.png";
-  static const error = "assets/images/error.png";
+  static const hulk = "assets/images/hulk.png";
+  static const superman = "assets/images/superman.png";
 }
