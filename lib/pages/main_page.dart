@@ -66,6 +66,7 @@ class SuperheroesList extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+
     return StreamBuilder<List<SuperheroInfo>>(
       stream: stream,
       builder: (context, snapshot) {
@@ -215,14 +216,22 @@ class MainPageStateWidget extends StatelessWidget {
           case MainPageState.loading:
             return LoadingIndicator();
           case MainPageState.noFavorites:
-            return InfoWithButton(
-              title: 'No favorites yet',
-              subtitle: 'Search and add',
-              assetImage: SuperheroesImages.ironMan,
-              imageHeight: 119,
-              imageWidth: 108,
-              imageTopPadding: 9,
-              buttonText: 'Search',
+            return Stack(
+              children: [
+                InfoWithButton(
+                  title: 'No favorites yet',
+                  subtitle: 'Search and add',
+                  assetImage: SuperheroesImages.ironMan,
+                  imageHeight: 119,
+                  imageWidth: 108,
+                  imageTopPadding: 9,
+                  buttonText: 'Search',
+                ),
+                Align(
+                  alignment: Alignment.bottomCenter,
+                  child: ActionButton(text: 'remove', onTap: bloc.removeFavorite),
+                )
+              ],
             );
           case MainPageState.minSymbols:
             return MinSymbolWidget();
@@ -252,9 +261,17 @@ class MainPageStateWidget extends StatelessWidget {
               stream: bloc.observeSearchedSuperheroes(),
             );
           case MainPageState.favorites:
-            return SuperheroesList(
-              title: 'Your favorites',
-              stream: bloc.observeFavoriteSuperheroes(),
+            return Stack(
+              children: [
+                SuperheroesList(
+                  title: 'Your favorites',
+                  stream: bloc.observeFavoriteSuperheroes(),
+                ),
+                Align(
+                  alignment: Alignment.bottomCenter,
+                  child: ActionButton(text: 'remove', onTap: bloc.removeFavorite),
+                )
+              ],
             );
           default:
             return Center(

@@ -7,7 +7,7 @@ class MainBloc {
 
   final BehaviorSubject<MainPageState> stateSubject = BehaviorSubject();
   final favoriteSuperheroesSubject =
-      BehaviorSubject<List<SuperheroInfo>>.seeded(SuperheroInfo.mocked);
+        BehaviorSubject<List<SuperheroInfo>>.seeded(SuperheroInfo.mocked);
   final searchedSuperheroesSubject = BehaviorSubject<List<SuperheroInfo>>();
   final currentTextSubject = BehaviorSubject<String>.seeded("");
 
@@ -24,7 +24,7 @@ class MainBloc {
       (searchText, favorites) =>
           MainPageStateInfo(searchText, favorites.isNotEmpty),
     ).listen((value) {
-      print("Changed: $value");
+      //print("Changed: $value");
       searchSubscription?.cancel();
       if (value.searchText.isEmpty) {
         if (value.haveFavorites) {
@@ -57,6 +57,15 @@ class MainBloc {
     );
   }
 
+  void removeFavorite() {
+    List<SuperheroInfo> currentList = favoriteSuperheroesSubject.value;
+    if(currentList.isEmpty){
+      favoriteSuperheroesSubject.add(SuperheroInfo.mocked);
+    } else {
+      favoriteSuperheroesSubject.add(currentList.sublist(0, currentList.length - 1));
+    }
+  }
+
   Stream<List<SuperheroInfo>> observeFavoriteSuperheroes() =>
       favoriteSuperheroesSubject;
 
@@ -65,7 +74,10 @@ class MainBloc {
 
   Future<List<SuperheroInfo>?> search(final String text) async {
     await Future.delayed(Duration(seconds: 1));
-    return SuperheroInfo.mocked.where((element) => element.name.toLowerCase().contains(text.toLowerCase())).toList();
+    return SuperheroInfo.mocked
+        .where((element) =>
+            element.name.toLowerCase().contains(text.toLowerCase()))
+        .toList();
   }
 
   Stream<MainPageState> observeMainPageState() => stateSubject;
