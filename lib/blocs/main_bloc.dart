@@ -117,14 +117,23 @@ class MainBloc {
         );
       }).toList();
       return founds;
-    } else if (statusCode == 200 && decode['response'] == 'error') {
-      if (decode['error'] == 'character with given name not found') {
+    }
+    // else if (statusCode == 200 && decode['response'] == 'error') {
+    //   if (decode['error'] == 'character with given name not found') {
+    //     throw ApiException("Client error happened");
+    //   }
+    // } else if (statusCode >= 500 && statusCode <= 599) {
+    //   throw ApiException("Server error happened");
+    // } else if (statusCode >= 400 && statusCode <= 499) {
+    //   throw ApiException("Client error happened");
+    // }
+    else if(decode['response'] == 'error'){
+      if(decode['error'] == 'character with given name not found'){
+        return [];
+      }
+      else if(decode['error'] != 'character with given name not found'){
         throw ApiException("Client error happened");
       }
-    } else if (statusCode >= 500 && statusCode <= 599) {
-      throw ApiException("Server error happened");
-    } else if (statusCode >= 400 && statusCode <= 499) {
-      throw ApiException("Client error happened");
     }
     throw Exception('Unknown error happened');
   }
