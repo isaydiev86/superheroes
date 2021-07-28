@@ -102,8 +102,12 @@ class MainBloc {
     final response = await (client ??= http.Client())
         .get(Uri.parse("https://superheroapi.com/api/$token/search/$text"));
     final decode = json.decode(response.body);
-    final statusCode = response.statusCode;
-
+    if(response.statusCode >= 500){
+      throw ApiException("Server error happened");
+    }
+    else if(response.statusCode <500 && response.statusCode >= 400) {
+      throw ApiException("Client error happened");
+    }
     if (decode['response'] == 'success') {
       final List<dynamic> results = decode['results'];
       final List<Superhero> superheroes = results
@@ -118,15 +122,6 @@ class MainBloc {
       }).toList();
       return founds;
     }
-    // else if (statusCode == 200 && decode['response'] == 'error') {
-    //   if (decode['error'] == 'character with given name not found') {
-    //     throw ApiException("Client error happened");
-    //   }
-    // } else if (statusCode >= 500 && statusCode <= 599) {
-    //   throw ApiException("Server error happened");
-    // } else if (statusCode >= 400 && statusCode <= 499) {
-    //   throw ApiException("Client error happened");
-    // }
     else if(decode['response'] == 'error'){
       if(decode['error'] == 'character with given name not found'){
         return [];
