@@ -11,6 +11,7 @@ class InfoWithButton extends StatelessWidget {
   final double imageHeight; // — высота картинки
   final double imageWidth; // — ширина картинки
   final double imageTopPadding; //— отступ у картинки сверху, в виджете Stack
+  final VoidCallback onTap; //— отступ у картинки сверху, в виджете Stack
 
   const InfoWithButton(
       {Key? key,
@@ -20,7 +21,9 @@ class InfoWithButton extends StatelessWidget {
       required this.assetImage,
       required this.imageHeight,
       required this.imageWidth,
-      required this.imageTopPadding})
+      required this.imageTopPadding,
+      required this.onTap,
+      })
       : super(key: key);
 
   @override
@@ -63,7 +66,7 @@ class InfoWithButton extends StatelessWidget {
                   fontSize: 16,
                   fontWeight: FontWeight.w700)),
           const SizedBox(height: 30),
-          ActionButton(text: buttonText, onTap: () {})
+          ActionButton(text: buttonText, onTap: onTap)
         ],
       ),
     );
