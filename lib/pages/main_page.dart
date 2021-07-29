@@ -62,6 +62,12 @@ class _MainPageContentState extends State<MainPageContent> {
   void initState() {
     super.initState();
     myFocusNode = FocusNode();
+    SchedulerBinding.instance?.addPostFrameCallback((timeStamp) {
+      myFocusNode.addListener(() {
+        setState(() {});
+      });
+
+    });
   }
 
   @override
@@ -229,7 +235,7 @@ class MainPageStateWidget extends StatelessWidget {
               imageWidth: 126,
               imageTopPadding: 22,
               buttonText: 'Retry',
-              onTap: () {},
+              onTap: bloc.retry,
             );
           case MainPageState.searchResults:
             return SuperheroesList(

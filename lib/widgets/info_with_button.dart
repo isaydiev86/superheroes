@@ -11,7 +11,7 @@ class InfoWithButton extends StatelessWidget {
   final double imageHeight; // — высота картинки
   final double imageWidth; // — ширина картинки
   final double imageTopPadding; //— отступ у картинки сверху, в виджете Stack
-  final VoidCallback onTap; //— отступ у картинки сверху, в виджете Stack
+  final VoidCallback onTap;
 
   const InfoWithButton(
       {Key? key,

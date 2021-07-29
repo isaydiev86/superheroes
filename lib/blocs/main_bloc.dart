@@ -74,21 +74,9 @@ class MainBloc {
     }
   }
 
-  void retry(final String value){
-    stateSubject.add(MainPageState.loading);
-    searchSubscription = search(value).asStream().listen(
-          (searchResults) {
-        if (searchResults!.isEmpty) {
-          stateSubject.add(MainPageState.nothingFound);
-        } else {
-          searchedSuperheroesSubject.add(searchResults);
-          stateSubject.add(MainPageState.searchResults);
-        }
-      },
-      onError: (error, stackTrace) {
-        stateSubject.add(MainPageState.loadingError);
-      },
-    );
+  void retry(){
+    search(currentTextSubject.value);
+    searchForSuperheroes(currentTextSubject.value);
   }
 
   Stream<List<SuperheroInfo>> observeFavoriteSuperheroes() =>
