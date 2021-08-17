@@ -113,9 +113,7 @@ class MainBloc {
       if(decode['error'] == 'character with given name not found'){
         return [];
       }
-      else if(decode['error'] != 'character with given name not found'){
-        throw ApiException("Client error happened");
-      }
+      throw ApiException("Client error happened");
     }
     throw Exception('Unknown error happened');
   }
