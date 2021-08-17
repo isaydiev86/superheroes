@@ -75,7 +75,6 @@ class MainBloc {
   }
 
   void retry(){
-    search(currentTextSubject.value);
     searchForSuperheroes(currentTextSubject.value);
   }
 
