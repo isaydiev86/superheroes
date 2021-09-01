@@ -1,11 +1,9 @@
-
 import 'package:json_annotation/json_annotation.dart';
 
 part 'powerstats.g.dart';
 
-@JsonSerializable(fieldRename: FieldRename.kebab, explicitToJson: true)
+@JsonSerializable()
 class Powerstats {
-
   final String intelligence;
   final String strength;
   final String speed;
@@ -13,11 +11,38 @@ class Powerstats {
   final String power;
   final String combat;
 
+  Powerstats({
+    required this.intelligence,
+    required this.strength,
+    required this.speed,
+    required this.durability,
+    required this.power,
+    required this.combat,
+  });
 
-  Powerstats(this.intelligence, this.strength, this.speed, this.durability,
-      this.power, this.combat);
+  bool isNotNull() =>
+      intelligence != 'null' &&
+      strength != 'null' &&
+      speed != 'null' &&
+      durability != 'null' &&
+      power != 'null' &&
+      combat != 'null';
 
-  factory Powerstats.fromJson(final Map<String, dynamic> json) => _$PowerstatsFromJson(json);
+  double convertStringToPercent(String value) {
+    final intValue = int.tryParse(value);
+    if (intValue == null) return 0;
+    return intValue/100;
+  }
+
+  double get intelligencePercent => convertStringToPercent(intelligence);
+  double get strengthPercent => convertStringToPercent(strength);
+  double get speedPercent => convertStringToPercent(speed);
+  double get durabilityPercent => convertStringToPercent(durability);
+  double get powerPercent => convertStringToPercent(power);
+  double get combatPercent => convertStringToPercent(combat);
+
+  factory Powerstats.fromJson(final Map<String, dynamic> json) =>
+      _$PowerstatsFromJson(json);
 
   Map<String, dynamic> toJson() => _$PowerstatsToJson(this);
 }
