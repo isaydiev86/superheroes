@@ -21,7 +21,7 @@ void runTestLesson4Task4() {
                 ..addScenario('neutral', BiographyWidget(biography: bio2))
                 ..addScenario('bad', BiographyWidget(biography: bio3)))
               .build()),
-      surfaceSize: const Size(328, 819),
+      surfaceSize: const Size(328, 837),
     );
     await screenMatchesGolden(tester, 'superheroes_lesson_4_task_4', autoHeight: true);
   });
