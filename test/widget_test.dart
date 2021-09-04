@@ -7,7 +7,8 @@ import 'lesson_4/task_1.dart';
 import 'lesson_4/task_2.dart';
 import 'lesson_4/task_3.dart';
 import 'lesson_4/task_4.dart';
-//import 'lesson_4/task_7.dart';
+import 'lesson_4/task_7.dart';
+
 
 void main() async {
   TestWidgetsFlutterBinding.ensureInitialized();
@@ -17,5 +18,5 @@ void main() async {
   group("l08h02", () => runTestLesson4Task2());
   group("l08h03", () => runTestLesson4Task3());
   group("l08h04", () => runTestLesson4Task4());
-  //group("l08h07", () => runTestLesson4Task7());
+  group("l08h07", () => runTestLesson4Task7());
 }

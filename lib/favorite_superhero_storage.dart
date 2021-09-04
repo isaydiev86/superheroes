@@ -75,4 +75,14 @@ class FavoriteSuperHeroStorage {
     return observeFavoriteSuperheroes().map(
         (superheroes) => superheroes.any((superhero) => superhero.id == id));
   }
+
+  Future<bool> updateIfInFavorite(final Superhero newSuperhero) async {
+    final superheroes = await _getSuperheroes();
+    final index = superheroes.indexWhere((superhero) => superhero.id == newSuperhero.id);
+    if (index == -1) {
+      return false;
+    }
+    superheroes[index] = newSuperhero;
+    return _setSuperheroes(superheroes);
+  }
 }

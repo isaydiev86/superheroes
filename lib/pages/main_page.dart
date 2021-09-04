@@ -310,87 +310,58 @@ class ListTile extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final MainBloc bloc = Provider.of<MainBloc>(context, listen: false);
+    final card = SuperheroCard(
+      superheroInfo: superhero,
+      onTap: () {
+        Navigator.of(context).push(
+          MaterialPageRoute(
+            builder: (context) => SuperheroPage(
+              id: superhero.id,
+            ),
+          ),
+        );
+      },
+    );
+
     return Padding(
       padding: const EdgeInsets.symmetric(horizontal: 16.0),
       child: ableToSwipe
-          ? DismSuperCard(superhero: superhero)
-          : SuperheroCard(
-              superheroInfo: superhero,
-              onTap: () {
-                Navigator.of(context).push(
-                  MaterialPageRoute(
-                    builder: (context) => SuperheroPage(
-                      id: superhero.id,
-                    ),
-                  ),
-                );
-              },
-            ),
+          ? Dismissible(
+              key: ValueKey(superhero.id),
+              child: card,
+              background: BackgroundCard(isLeft: true),
+              secondaryBackground: BackgroundCard(isLeft: false),
+              onDismissed: (_) => bloc.removeFromFavorites(superhero.id),
+            )
+          : card,
     );
   }
 }
 
-class DismSuperCard extends StatelessWidget {
-  const DismSuperCard({
-    Key? key,
-    required this.superhero,
-  }) : super(key: key);
+class BackgroundCard extends StatelessWidget {
+  final bool isLeft;
 
-  final SuperheroInfo superhero;
+  const BackgroundCard({Key? key, required this.isLeft}) : super(key: key);
 
   @override
   Widget build(BuildContext context) {
-    final MainBloc bloc = Provider.of<MainBloc>(context, listen: false);
-
-    return Dismissible(
-        key: ValueKey(superhero.id),
-        child: SuperheroCard(
-          onTap: () {
-            Navigator.of(context).push(
-              MaterialPageRoute(
-                builder: (context) => SuperheroPage(
-                  id: superhero.id,
-                ),
-              ),
-            );
-          },
-          superheroInfo: superhero,
+    return Container(
+      height: 70,
+      padding: const EdgeInsets.symmetric(horizontal: 16),
+      alignment: isLeft ? Alignment.centerLeft : Alignment.centerRight,
+      decoration: BoxDecoration(
+          borderRadius: BorderRadius.circular(8), color: SuperheroesColors.red),
+      child: Text(
+        "Remove\nfrom\nfavorites".toUpperCase().trim(),
+        textAlign: isLeft ? TextAlign.left : TextAlign.right,
+        style: TextStyle(
+          color: Colors.white,
+          fontSize: 12,
+          fontWeight: FontWeight.w700,
         ),
-        background: Container(
-          height: 70,
-          padding: const EdgeInsets.only(left: 16),
-          alignment: Alignment.centerLeft,
-          decoration: BoxDecoration(
-              borderRadius: BorderRadius.circular(8),
-              color: SuperheroesColors.red),
-          child: Text(
-            "Remove\nfrom\nfavorites".toUpperCase().trim(),
-            textAlign: TextAlign.left,
-            style: TextStyle(
-              color: Colors.white,
-              fontSize: 12,
-              fontWeight: FontWeight.w700,
-            ),
-          ),
-        ),
-        secondaryBackground: Container(
-          height: 70,
-          padding: const EdgeInsets.only(right: 16),
-          alignment: Alignment.centerRight,
-          decoration: BoxDecoration(
-              borderRadius: BorderRadius.circular(8),
-              color: SuperheroesColors.red),
-          child: Text(
-            "Remove\nfrom\nfavorites".toUpperCase().trim(),
-            textAlign: TextAlign.right,
-            style: TextStyle(
-              color: Colors.white,
-              fontSize: 12,
-              fontWeight: FontWeight.w700,
-            ),
-          ),
-        ),
-        onDismissed: (_) => bloc.removeFromFavorites(superhero.id));
+      ),
+    );
   }
 }
 

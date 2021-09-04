@@ -4,6 +4,7 @@ import 'package:superheroes/blocs/main_bloc.dart';
 import 'package:superheroes/model/alignment_info.dart';
 import 'package:superheroes/resources/superheroes_colors.dart';
 import 'package:superheroes/resources/superheroes_images.dart';
+import 'package:superheroes/widgets/alignment_widget.dart';
 
 class SuperheroCard extends StatelessWidget {
   final SuperheroInfo superheroInfo;
@@ -32,35 +33,14 @@ class SuperheroCard extends StatelessWidget {
             const SizedBox(width: 12),
             NameAndRealNameWidget(superheroInfo: superheroInfo),
             if (superheroInfo.alignmentInfo != null)
-              AlignmentWidget(alignmentInfo: superheroInfo.alignmentInfo!)
+              AlignmentWidget(
+                alignmentInfo: superheroInfo.alignmentInfo!,
+                borderRadius: BorderRadius.only(
+                  topLeft: Radius.circular(8),
+                  topRight: Radius.circular(8),
+                ),
+              )
           ],
-        ),
-      ),
-    );
-  }
-}
-
-class AlignmentWidget extends StatelessWidget {
-  final AlignmentInfo alignmentInfo;
-
-  const AlignmentWidget({Key? key, required this.alignmentInfo})
-      : super(key: key);
-
-  @override
-  Widget build(BuildContext context) {
-    return RotatedBox(
-      quarterTurns: 1,
-      child: Container(
-        alignment: Alignment.center,
-        padding: EdgeInsets.symmetric(vertical: 6),
-        color: alignmentInfo.color,
-        child: Text(
-          alignmentInfo.name.toUpperCase(),
-          style: TextStyle(
-            color: Colors.white,
-            fontWeight: FontWeight.w700,
-            fontSize: 10,
-          ),
         ),
       ),
     );

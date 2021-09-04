@@ -13,6 +13,8 @@ class SuperheroBloc {
   final String id;
 
   final superheroSubject = BehaviorSubject<Superhero>();
+  final superheroPageStateSubject = BehaviorSubject<SuperheroPageState>();
+
 
   StreamSubscription? getFromFavoritesSubscription;
   StreamSubscription? requestSubscription;
@@ -23,7 +25,9 @@ class SuperheroBloc {
     getFromFavorites();
   }
 
-  Stream<Superhero> observeSuperhero() => superheroSubject;
+  Stream<Superhero> observeSuperhero() => superheroSubject.distinct(); // убераем дубли
+
+  Stream<SuperheroPageState> observeSuperheroPageState() => superheroPageStateSubject.distinct();
 
   void getFromFavorites() {
     getFromFavoritesSubscription?.cancel();
@@ -34,27 +38,34 @@ class SuperheroBloc {
       (superhero) {
         if (superhero != null) {
           superheroSubject.add(superhero);
-          print("get superheroes in favorites $superhero");
-
+          superheroPageStateSubject.add(SuperheroPageState.loaded);
+        } else {
+          superheroPageStateSubject.add(SuperheroPageState.loading);
         }
-        requestSuperheroes(superhero);
+        requestSuperheroes(superhero != null);
       },
       onError: (error, stackTrace) =>
           print("Error happened get favorite: $error, $stackTrace"),
     );
   }
 
-  void requestSuperheroes(final Superhero? superheroFavorite) {
+  void retry() {
+    superheroPageStateSubject.add(SuperheroPageState.loading);
+    requestSuperheroes(false);
+  }
+
+  void requestSuperheroes(final bool isInFavorites) {
     requestSubscription?.cancel();
 
     requestSubscription = request().asStream().listen(
       (superhero) {
-        if (superhero != superheroFavorite && superheroFavorite == null) {
-          superheroSubject.add(superhero);
-          return;
-        }
+        superheroSubject.add(superhero);
+        superheroPageStateSubject.add(SuperheroPageState.loaded);
       },
       onError: (error, stackTrace) {
+        if (!isInFavorites) {
+          superheroPageStateSubject.add(SuperheroPageState.error);
+        }
         print("Error happened in requestSuperheroes: $error, $stackTrace");
       },
     );
@@ -110,7 +121,11 @@ class SuperheroBloc {
     }
     final decoded = json.decode(response.body);
     if (decode['response'] == 'success') {
-      return Superhero.fromJson(decoded);
+      final superhero = Superhero.fromJson(decoded);
+      // обновляем storage
+      await FavoriteSuperHeroStorage.getInstance().updateIfInFavorite(superhero);
+
+      return superhero;
     } else if (decode['response'] == 'error') {
       throw ApiException("Client error happened");
     }
@@ -126,5 +141,9 @@ class SuperheroBloc {
     getFromFavoritesSubscription?.cancel();
 
     superheroSubject.close();
+    superheroPageStateSubject.close();
   }
+}
+enum SuperheroPageState{
+  loading, loaded, error
 }

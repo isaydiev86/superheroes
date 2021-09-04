@@ -14,6 +14,7 @@ import 'package:superheroes/resources/superheroes_colors.dart';
 import 'package:superheroes/resources/superheroes_images.dart';
 import 'package:superheroes/widgets/action_button.dart';
 import 'package:http/http.dart' as http;
+import 'package:superheroes/widgets/alignment_widget.dart';
 
 class SuperheroPage extends StatefulWidget {
   final http.Client? client;
@@ -56,6 +57,68 @@ class SuperheroContentPage extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final bloc = Provider.of<SuperheroBloc>(context, listen: false);
+    return StreamBuilder<SuperheroPageState>(
+      stream: bloc.observeSuperheroPageState(),
+      builder: (context, snapshot) {
+        if (!snapshot.hasData || snapshot.data == null) {
+          return const SizedBox.shrink();
+        }
+        final state = snapshot.data!;
+        switch (state) {
+          case SuperheroPageState.loading:
+            return SuperheroLoadingWidget();
+          case SuperheroPageState.loaded:
+            return SuperheroLoadedWidget();
+          case SuperheroPageState.error:
+          default:
+            return SuperheroErrorWidget();
+        }
+      },
+    );
+  }
+}
+
+class SuperheroLoadingWidget extends StatelessWidget {
+  const SuperheroLoadingWidget({Key? key}) : super(key: key);
+
+  @override
+  Widget build(BuildContext context) {
+    return CustomScrollView(
+      slivers: [
+        SliverAppBar(backgroundColor: SuperheroesColors.background),
+        SliverToBoxAdapter(
+          child: Container(
+            margin: const EdgeInsets.only(top: 60),
+            alignment: Alignment.topCenter,
+            height: 44,
+            width: 44,
+            child: CircularProgressIndicator(
+              color: SuperheroesColors.blue,
+            ),
+          ),
+        ),
+      ],
+    );
+  }
+}
+
+class SuperheroErrorWidget extends StatelessWidget {
+  const SuperheroErrorWidget({Key? key}) : super(key: key);
+
+  @override
+  Widget build(BuildContext context) {
+    return Container();
+  }
+}
+
+class SuperheroLoadedWidget extends StatelessWidget {
+  const SuperheroLoadedWidget({
+    Key? key,
+  }) : super(key: key);
+
+  @override
+  Widget build(BuildContext context) {
+    final bloc = Provider.of<SuperheroBloc>(context, listen: false);
 
     return StreamBuilder<Superhero>(
         stream: bloc.observeSuperhero(),
@@ -64,6 +127,7 @@ class SuperheroContentPage extends StatelessWidget {
             return const SizedBox.shrink();
           }
           final superhero = snapshot.data!;
+          print("Superhero: $superhero");
           return CustomScrollView(
             slivers: [
               SuperheroAppBar(superhero: superhero),
@@ -73,7 +137,8 @@ class SuperheroContentPage extends StatelessWidget {
                     const SizedBox(height: 30),
                     if (superhero.powerstats.isNotNull())
                       PowerStatsWidget(powerstats: superhero.powerstats),
-                    BiographyWidget(biography: superhero.biography)
+                    BiographyWidget(biography: superhero.biography),
+                    const SizedBox(height: 30),
                   ],
                 ),
               ),
@@ -113,20 +178,16 @@ class SuperheroAppBar extends StatelessWidget {
         background: CachedNetworkImage(
           imageUrl: superhero.image.url,
           fit: BoxFit.cover,
-          placeholder: (context, url) => SizedBox(
-            height: 348,
-            child: ColoredBox(
-              color: SuperheroesColors.indigo,
-            ),
+          placeholder: (context, url) => ColoredBox(
+            color: SuperheroesColors.indigo,
           ),
           errorWidget: (context, url, error) => Container(
             color: SuperheroesColors.indigo,
-            child: Center(
-              child: Image.asset(
-                SuperheroesImages.unknownBig,
-                width: 85,
-                height: 264,
-              ),
+            alignment: Alignment.center,
+            child: Image.asset(
+              SuperheroesImages.unknownBig,
+              width: 85,
+              height: 264,
             ),
           ),
         ),
@@ -362,97 +423,53 @@ class BiographyWidget extends StatelessWidget {
   Widget build(BuildContext context) {
     return Container(
       margin: const EdgeInsets.symmetric(horizontal: 16),
-      //padding: const EdgeInsets.all(16),
-      //height: 328,
       decoration: BoxDecoration(
           color: SuperheroesColors.indigo,
           borderRadius: BorderRadius.circular(20)),
-      alignment: Alignment.center,
       child: Stack(
-        alignment: Alignment.topCenter,
         children: [
           Padding(
-            padding: const EdgeInsets.only(top: 16.0),
-            child: Text(
-              'Bio'.toUpperCase(),
-              textAlign: TextAlign.center,
-              style: TextStyle(
-                color: Colors.white,
-                fontSize: 18,
-                fontWeight: FontWeight.w700,
-              ),
+            padding: const EdgeInsets.only(
+                top: 16.0, left: 16, right: 16, bottom: 24),
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.stretch,
+              children: [
+                Center(
+                  child: Text(
+                    'Bio'.toUpperCase(),
+                    style: TextStyle(
+                      color: Colors.white,
+                      fontSize: 18,
+                      fontWeight: FontWeight.w700,
+                    ),
+                  ),
+                ),
+                const SizedBox(height: 8),
+                BioInfoItemWidget(title: 'Full name', name: biography.fullName),
+                const SizedBox(height: 20),
+                BioInfoItemWidget(
+                  title: 'Aliases',
+                  name: biography.getAliases(biography.aliases),
+                ),
+                const SizedBox(height: 20),
+                BioInfoItemWidget(
+                    title: 'Place of birth', name: biography.placeOfBirth),
+              ],
             ),
-          ),
-          Padding(
-            padding:
-                const EdgeInsets.only(top: 49, bottom: 24, left: 16, right: 16),
-            child: BioInfoWidget(biography: biography),
           ),
           if (biography.alignmentInfo != null)
-            BioAlignmentWidget(alignmentInfo: biography.alignmentInfo!)
+            Align(
+              alignment: Alignment.topRight,
+              child: AlignmentWidget(
+                alignmentInfo: biography.alignmentInfo!,
+                borderRadius: BorderRadius.only(
+                  topLeft: Radius.circular(16),
+                  bottomRight: Radius.circular(16),
+                ),
+              ),
+            )
         ],
       ),
-    );
-  }
-}
-
-class BioAlignmentWidget extends StatelessWidget {
-  final AlignmentInfo alignmentInfo;
-
-  const BioAlignmentWidget({
-    Key? key,
-    required this.alignmentInfo,
-  }) : super(key: key);
-
-  @override
-  Widget build(BuildContext context) {
-    return Positioned(
-      top: 0,
-      right: 0,
-      child: RotatedBox(
-        quarterTurns: 1,
-        child: Container(
-          width: 70,
-          padding: const EdgeInsets.symmetric(vertical: 6),
-          alignment: Alignment.center,
-          decoration: BoxDecoration(
-            color: alignmentInfo.color,
-            borderRadius: BorderRadius.only(
-              topLeft: Radius.circular(20),
-              bottomRight: Radius.circular(20),
-            ),
-          ),
-          child: Text(
-            alignmentInfo.name.toUpperCase(),
-            style: TextStyle(
-              color: Colors.white,
-              fontSize: 10,
-              fontWeight: FontWeight.w700,
-            ),
-          ),
-        ),
-      ),
-    );
-  }
-}
-
-class BioInfoWidget extends StatelessWidget {
-  final Biography biography;
-
-  const BioInfoWidget({Key? key, required this.biography}) : super(key: key);
-
-  @override
-  Widget build(BuildContext context) {
-    return Column(
-      children: [
-        BioInfoItemWidget(title: 'Full name', name: biography.fullName),
-        const SizedBox(height: 20),
-        BioInfoItemWidget(
-            title: 'Aliases', name: biography.getAliases(biography.aliases)),
-        const SizedBox(height: 20),
-        BioInfoItemWidget(
-            title: 'Place of birth', name: biography.placeOfBirth),
-      ],
     );
   }
 }
@@ -471,7 +488,7 @@ class BioInfoItemWidget extends StatelessWidget {
   Widget build(BuildContext context) {
     return Column(
       crossAxisAlignment: CrossAxisAlignment.stretch,
-      mainAxisSize: MainAxisSize.max,
+      mainAxisSize: MainAxisSize.min,
       children: [
         Text(
           title.toUpperCase(),
@@ -481,11 +498,13 @@ class BioInfoItemWidget extends StatelessWidget {
             fontWeight: FontWeight.w700,
           ),
         ),
+        const SizedBox(height: 4),
         Text(
           name,
           style: TextStyle(
             color: Colors.white,
             fontSize: 16,
+            fontWeight: FontWeight.w400,
           ),
         ),
       ],
