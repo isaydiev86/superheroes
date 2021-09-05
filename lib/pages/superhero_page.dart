@@ -12,6 +12,7 @@ import 'package:superheroes/resources/superheroes_colors.dart';
 import 'package:superheroes/resources/superheroes_images.dart';
 import 'package:http/http.dart' as http;
 import 'package:superheroes/widgets/alignment_widget.dart';
+import 'package:superheroes/widgets/info_with_button.dart';
 
 class SuperheroPage extends StatefulWidget {
   final http.Client? client;
@@ -104,7 +105,21 @@ class SuperheroErrorWidget extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return Container();
+    final bloc = Provider.of<SuperheroBloc>(context, listen: false);
+    return Container(
+      margin: const EdgeInsets.only(top: 60),
+      alignment: Alignment.topCenter,
+      child: InfoWithButton(
+        title: 'Error happened',
+        subtitle: 'Please, try again',
+        assetImage: SuperheroesImages.superman,
+        imageHeight: 106,
+        imageWidth: 126,
+        imageTopPadding: 22,
+        buttonText: 'Retry',
+        onTap: bloc.retry,
+      ),
+    );
   }
 }
 
