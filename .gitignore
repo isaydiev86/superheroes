@@ -1,6 +1,5 @@
 *.env
 */failures/.png
-*build.yaml
 # Miscellaneous
 *.class
 *.log
